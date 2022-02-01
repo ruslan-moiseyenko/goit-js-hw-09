@@ -14,6 +14,7 @@ const countdownRefs = {
 }
 
 let selectedDate = 0;
+let intervalID = null;
 
 const calendar = flatpickr('#datetime-picker', {
   enableTime: true,
@@ -22,7 +23,7 @@ const calendar = flatpickr('#datetime-picker', {
   minuteIncrement: 1,
   onClose(selectedDates) {
     selectedDate = selectedDates[0];
-    const currentDate = new Date();
+    const currentDate = Date.now();
 
     if ((selectedDate - currentDate) <= 0) {
       startButton.disabled = true;
@@ -33,14 +34,14 @@ const calendar = flatpickr('#datetime-picker', {
       return;
     }
     startButton.disabled = false;
-    console.log(timer.intervalID);
-    clearInterval(timer.intervalID);
+    clearInterval(intervalID);
+    timer.isActive = false;
   },
 });
 
 
 const timer = {
-  intervalID: null,
+  //intervalID: null,
   isActive: false,
   start() {
     if (this.isActive) {
@@ -48,14 +49,14 @@ const timer = {
     }
     startButton.disabled = true;
 
-    this.intervalID = setInterval(() => {
+    intervalID = setInterval(() => {
       this.isActive = true;
 
       const currentDate = Date.now();
       const remainedTime = selectedDate - currentDate;
 
       if (remainedTime <= 0) {
-        clearInterval(this.intervalID);
+        clearInterval(intervalID);
         return;
       }
 
@@ -78,7 +79,7 @@ function updateCountdownUI(time) {
 
 }
 
-startButton.addEventListener('click', timer.start);
+startButton.addEventListener('click', timer.start.bind(timer));
 
 
 function convertMs(ms) {
