@@ -45,4 +45,5 @@ function onButtonClick(e) {
     console.log(i);
     dly += stp;
   }
+  formRef.reset();
 }
